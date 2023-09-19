@@ -1,6 +1,6 @@
       
 node {
-    def address = "madhavi/SampleAPI/sysAPI"
+    def address = "devops.splonline.com.sa/SPLDigitalCollection/Integration_WSO2/_git/SPLCICDTest"
 
 
     def  notify_users = ""
@@ -128,7 +128,7 @@ try {
         stage("Build in Maven"){
             echo "Enter Build in Maven"
             echo "cd ${ei_service_project_tem_path}"
-          build_result = bat (returnStdout: true, script: "cd ${ei_service_project_tem_path}\SampleAPI\sysAPI && mvn clean install -Dmaven.test.skip=true || echo success")
+          build_result = bat (returnStdout: true, script: "cd ${ei_service_project_tem_path}/HelloworldCompositeExporter && mvn clean install -Dmaven.test.skip=true || echo success")
           is_car_build_error = build_result.contains("[ERROR]")
           echo "Exit Build in Maven"
         }
@@ -149,7 +149,7 @@ try {
             echo "print base mi proj"
             echo "${ei_service_project_tem_path}"
         //  deploy_result =  
-         powershell "copy ${ei_service_project_tem_path}\SampleAPI\sysAPI\sysAPICompositeExporter/target/*.car C:/JenkinsShare"
+         powershell "copy ${ei_service_project_tem_path}/HelloworldCompositeExporter/target/*.car C:/JenkinsShare"
         // is_car_deploy_error = deploy_result.contains("[ERROR]")
  echo "Exit Cope car"
         }
