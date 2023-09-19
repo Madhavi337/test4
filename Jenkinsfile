@@ -1,6 +1,6 @@
       
 node {
-    def address = "madhavi\SampleAPI\sysAPI"
+    def address = "madhavi/SampleAPI/sysAPI"
 
 
     def  notify_users = ""
