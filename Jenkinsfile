@@ -18,14 +18,21 @@ pipeline {
                     def statusCode = response.getStatus()
                     def responseBody = response.getContent()
 
-                    echo "API call was successful.Response Status Code: ${statusCode}"
-                    echo "API call was UNsuccessful.Response Body: ${responseBody}"
+                    echo "Response Status Code: ${statusCode}"
+                    echo "Response Body: ${responseBody}"
 
                     // You can now process or parse the response as needed
                     // For example, parsing JSON:
                     def jsonResponse = new groovy.json.JsonSlurper().parseText(responseBody)
                     echo "Parsed JSON Response: ${jsonResponse}"
-                    
+
+                 // Check the HTTP response status
+                    if (response.status == 200) {
+                        echo "API call was successful. Response body: ${responseBody}"
+                    } else {
+                        error "API call failed with status ${statusCode}."
+                    }
+
                 }
             }
 
