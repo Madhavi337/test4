@@ -25,14 +25,7 @@ pipeline {
                     // For example, parsing JSON:
                     def jsonResponse = new groovy.json.JsonSlurper().parseText(responseBody)
                     echo "Parsed JSON Response: ${jsonResponse}"
-                    if (Response Status Code = 200)
-                    {
-                        println("Successfull")
-                    }
-                    else
-                    {
-                         println("NotSuccessfull")
-                    }
+                    
                 }
             }
 
