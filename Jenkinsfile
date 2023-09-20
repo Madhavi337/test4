@@ -18,8 +18,8 @@ pipeline {
                     def statusCode = response.getStatus()
                     def responseBody = response.getContent()
 
-                    echo "Response Status Code: ${statusCode}"
-                    echo "Response Body: ${responseBody}"
+                    echo "API call was successful.Response Status Code: ${statusCode}"
+                    echo "API call was UNsuccessful.Response Body: ${responseBody}"
 
                     // You can now process or parse the response as needed
                     // For example, parsing JSON:
