@@ -10,7 +10,7 @@ pipeline {
                     def response = httpRequest(
                         url: 'https://localhost:9164/management/applications',
                         httpMode: 'GET', // Use GET, POST, or other HTTP methods as needed
-                        customHeaders:[[name:"Authorization",value:"eyJraWQiOiJhM2UyOWM5ZS0xMjA0LTQzMjEtOTYzYi03ZThjOTViNWU0NjYiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvMDowOjA6MDowOjA6MDoxOjkxNjRcLyIsInN1YiI6ImFkbWluIiwiZXhwIjoxNjk1MzA1NzYxLCJzY29wZSI6ImFkbWluIn0.GL-wLhq6Y80xfsUF7Ha2St8S0PtOg__DX4T7sb1v4_muwvOV7sENsjWS1qPttFS00d5FQkpw6-V49tCT7udSf5CsZDuYnm7rIdG5pIw__tVOcxn39XB3G1aqfmF3UtPT7TtFVPGCYNmlTLmf_waIsJa-XcW6jYz6reLYxYHvWIC_60sXmWlDwLGRLQEaRpGsbnxtVZvOIdLAm8BpshootGlDgDUGBxy5L1H2mJAG33OBSL37mjdEFaoRvimmfbRRUhari0IWxrzEb5tvvTWVu2Vlzbx0ojxXwx0Bv-m0QA2zRGmrMYnlpnyNqm3MYDf4OwWVW64924kUZqQlHXhQ7w"]],
+                        customHeaders:[[name:"Authorization",value:"eyJraWQiOiJhZWNhODY0NS0yYmQwLTQ2ZWMtYTQ0ZC05MWNhYWVjYTcyOGQiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvMDowOjA6MDowOjA6MDoxOjkxNjRcLyIsInN1YiI6ImFkbWluIiwiZXhwIjoxNjk1MzA1OTQyLCJzY29wZSI6ImFkbWluIn0.feHPi82MdeDGrjsXLgQDnULF0ozXV-GoWKdBeprbLUjGvqM_vfZVawmTGe04-H7-4s4274mxLo773SZ4TWpWhSgOE9TmsmK_7syQfLEQMu0jppVTAjcoj2sS7lbKteMWR47-IKW-eqr8QiNWwyVd2oLZCDTVa7Nsh8EWIafvKPWoPDNqzbsbAmk3xI3GwMd1RcWXrA2yGsaTeclj_c5vUewrCXmxGghUup5NgWQ1ie-BJIHyzloWlt9zwXze5uA6vGlsbJ5cCbY6Cj-Nh72Q_y8NX7aPDwfW1Q4Ctezl_kMo1UCvS0ygRrtMeDRMeoWqwLaL_AAkrgXL7DVl2kSebg"]],
                         acceptType: 'APPLICATION_JSON',
                         responseHandle: 'NONE', // Use 'NONE' to capture the raw response
                         timeout: 60, // Set the timeout in seconds
