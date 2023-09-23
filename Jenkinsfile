@@ -6,10 +6,10 @@ pipeline {
     }
 
     stages {
-        stage('Call First and Second Endpoints') { // A single stage that encompasses both steps
+        stage('Call Management API') { // A single stage that encompasses both steps
             steps {
                 script {
-                    // Step 1: Call the First Endpoint
+                    // Step 1: Call the First Endpoint for Access Token
                     def response = httpRequest(
                         url: 'https://localhost:9164/management/login',
                         httpMode: 'GET',
@@ -37,7 +37,7 @@ pipeline {
                         error("First endpoint request failed with status code ${statusCode}")
                     }
 
-                    // Step 2: Call the Second Endpoint
+                    // Step 2: Call the Second Endpoint to get no of Carfiles Deployed
                     echo "AccessTokenFirst: ${inputdata}"
                     def res = httpRequest(
                         url: 'https://localhost:9164/management/applications',
