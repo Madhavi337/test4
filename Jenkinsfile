@@ -57,7 +57,28 @@ pipeline {
                     echo "Response Status Code: ${SecondstatusCode}"
                     echo "Response Body: ${SecondresponseBody}"
 
-                    if (SecondstatusCode == 200) {
+                    if (SecondstatusCode != 200 && SecondstatusCode != 401) {
+                        // Step 2: Call the third Endpoint to get the number of Carfiles Deployed
+                                echo "AccessTokenFirst: ${inputdata}"
+                                def resthree = httpRequest(
+                                    url: 'https://localhost:9164/management/applications',
+                                    httpMode: 'GET',
+                                    customHeaders: [[name: "Authorization", value: "Bearer ${inputdata}"]],
+                                    acceptType: 'APPLICATION_JSON',
+                                    responseHandle: 'NONE',
+                                    timeout: 60,
+                                    validResponseCodes: '200',
+                                    ignoreSslErrors: true,
+                                )
+                                echo "Second endpoint request failed with status code ${SecondstatusCode}"
+
+                                // Capture the response status code and content
+                                def ThirdstatusCode = resthree.getStatus()
+                                def ThirdresponseBody = resthree.getContent()
+
+                                echo "Response Status Code: ${ThirdstatusCode}"
+                                echo "Response Body: ${ThirdresponseBody}"
+
                         def jsonResponseSecond = new groovy.json.JsonSlurper().parseText(SecondresponseBody)
                         echo "Parsed JSON Response Second: ${jsonResponseSecond}"
                     } else {
