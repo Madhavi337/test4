@@ -89,10 +89,10 @@ pipeline {
                                     faultyList = jsonResponseThird.faultyList // Assign inputdata at the pipeline level
                                     echo "faultyList: ${jsonResponseThird.faultyList}"
 
-                                    if (jsonResponse.faultyList) {
+                                    if (jsonResponseThird.faultyList) {
                                             def carbonAppNameToCheck = "YourCarbonAppNameHere"
 
-                                            def isCarbonAppNamePresent = jsonResponse.faultyList.any { item ->
+                                            def isCarbonAppNamePresent = jsonResponseThird.faultyList.any { item ->
                                                 item.name == carbonAppNameToCheck
                                             }
 
