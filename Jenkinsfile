@@ -87,6 +87,12 @@ pipeline {
                         if (ThirdstatusCode == 200) {
                             def jsonResponseThird = new groovy.json.JsonSlurper().parseText(ThirdresponseBody)
                             echo "Parsed JSON Response Third: ${jsonResponseThird}"
+
+
+                            FaultycarbonAppName = jsonResponseThird.faultyList // Assign FaultycarbonAppName 
+                            echo "FaultycarbonAppName: ${jsonResponseThird.faultyList}"
+
+
                         } else {
                             error("Third endpoint request failed with status code ${ThirdstatusCode}")
                         }
