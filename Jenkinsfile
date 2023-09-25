@@ -72,13 +72,15 @@ pipeline {
                                     ignoreSslErrors: true,
                                 )
                                 echo "Second endpoint request failed with status code ${SecondstatusCode}"
-
+                                
                                 // Capture the response status code and content
                                 def ThirdstatusCode = resthree.getStatus()
                                 def ThirdresponseBody = resthree.getContent()
 
                                 echo "Response Status Code: ${ThirdstatusCode}"
                                 echo "Response Body: ${ThirdresponseBody}"
+                                
+                                def YourCarbonAppNameHere = carbonAppName
 
                                 if (ThirdstatusCode == 200) {
                                     def jsonResponseThird = new groovy.json.JsonSlurper().parseText(ThirdresponseBody)
@@ -86,6 +88,22 @@ pipeline {
 
                                     faultyList = jsonResponseThird.faultyList // Assign inputdata at the pipeline level
                                     echo "faultyList: ${jsonResponseThird.faultyList}"
+
+                                    if (jsonResponse.faultyList) {
+                                            def carbonAppNameToCheck = "YourCarbonAppNameHere"
+
+                                            def isCarbonAppNamePresent = jsonResponse.faultyList.any { item ->
+                                                item.name == carbonAppNameToCheck
+                                            }
+
+                                            if (isCarbonAppNamePresent) {
+                                                echo "The carbonAppName '${carbonAppNameToCheck}' is present in the response."
+                                            } else {
+                                                echo "The carbonAppName '${carbonAppNameToCheck}' is not present in the response."
+                                            }
+                                        } else {
+                                            echo "No carbonAppName is found in faultyList  response."
+                                        }
 
 
                                 } else {
