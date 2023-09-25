@@ -47,7 +47,7 @@ pipeline {
                         acceptType: 'APPLICATION_JSON',
                         responseHandle: 'NONE',
                         timeout: 60,
-                        validResponseCodes: '200',
+                        validResponseCodes: '200,404', // Include 404 as an accepted status code
                         ignoreSslErrors: true,
                     )
 
