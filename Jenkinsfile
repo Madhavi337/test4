@@ -33,33 +33,35 @@ pipeline {
                         echo "Parsed JSON Response First: ${jsonResponseFirst}"
                         inputdata = jsonResponseFirst.AccessToken // Assign inputdata at the pipeline level
                         echo "AccessTokenFirst: ${inputdata}"
+                    } else {
+                        error("First endpoint request failed with status code ${statusCode}")
+                    }
 
-                        // Step 2: Call the Second Endpoint to get the number of Carfiles Deployed
-                        echo "AccessTokenFirst: ${inputdata}"
-                        def res = httpRequest(
-                            url: 'https://localhost:9164/management/applications?carbonAppName=SuccessSampleGuarantyDelivaryCompositeExporter',
-                            httpMode: 'GET',
-                            customHeaders: [[name: "Authorization", value: "Bearer ${inputdata}"]],
-                            acceptType: 'APPLICATION_JSON',
-                            responseHandle: 'NONE',
-                            timeout: 60,
-                            validResponseCodes: '200',
-                            ignoreSslErrors: true,
-                        )
+                    // Step 2: Call the Second Endpoint to get no of Carfiles Deployed
+                    echo "AccessTokenFirst: ${inputdata}"
+                    def res = httpRequest(
+                        url: 'https://localhost:9164/management/applications',
+                        httpMode: 'GET',
+                        customHeaders: [[name: "Authorization", value: "Bearer ${inputdata}"]],
+                        acceptType: 'APPLICATION_JSON',
+                        responseHandle: 'NONE',
+                        timeout: 60,
+                        validResponseCodes: '200',
+                        ignoreSslErrors: true,
+                    )
 
-                        // Capture the response status code and content
-                        def SecondstatusCode = res.getStatus()
-                        def SecondresponseBody = res.getContent()
+                    // Capture the response status code and content
+                    def SecondstatusCode = res.getStatus()
+                    def SecondresponseBody = res.getContent()
 
-                        echo "Response Status Code: ${SecondstatusCode}"
-                        echo "Response Body: ${SecondresponseBody}"
+                    echo "Response Status Code: ${SecondstatusCode}"
+                    echo "Response Body: ${SecondresponseBody}"
 
-                        if (SecondstatusCode == 200) {
-                            def jsonResponseSecond = new groovy.json.JsonSlurper().parseText(SecondresponseBody)
-                            echo "Parsed JSON Response Second: ${jsonResponseSecond}"
-                        } else {
-                            if (SecondstatusCode == 404) {
-                                // Step 2: Call the third Endpoint to get the number of Carfiles Deployed
+                    if (SecondstatusCode == 200) {
+                        def jsonResponseSecond = new groovy.json.JsonSlurper().parseText(SecondresponseBody)
+                        echo "Parsed JSON Response Second: ${jsonResponseSecond}"
+                    }else  if(SecondstatusCode == 404){
+					 // Step 3: Call the third Endpoint to get the number of Carfiles Deployed
                                 echo "AccessTokenFirst: ${inputdata}"
                                 def resthree = httpRequest(
                                     url: 'https://localhost:9164/management/applications?carbonAppName=SuccessSampleGuarantyDelivaryCompositeExporter',
@@ -78,12 +80,11 @@ pipeline {
 
                                 echo "Response Status Code: ${ThirdstatusCode}"
                                 echo "Response Body: ${ThirdresponseBody}"
-                            } else {
-                                error("Second endpoint request failed with status code ${SecondstatusCode}")
-                            }
-                        }
-                    } else {
-                        error("First endpoint request failed with status code ${statusCode}")
+					}
+
+					
+					else {
+                        error("Second endpoint request failed with status code ${SecondstatusCode}")
                     }
                 }
             }
