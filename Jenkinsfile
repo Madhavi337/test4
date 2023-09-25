@@ -61,8 +61,33 @@ pipeline {
                         def jsonResponseSecond = new groovy.json.JsonSlurper().parseText(SecondresponseBody)
                         echo "Parsed JSON Response Second: ${jsonResponseSecond}"
                     } else {
+                        if (SecondstatusCode == 404) {
+                        // Step 2: Call the third Endpoint to get no of Carfiles Deployed
+                            echo "AccessTokenFirst: ${inputdata}"
+                            def resthree = httpRequest(
+                                url: 'https://localhost:9164/management/applications?carbonAppName=SuccessSampleGuarantyDelivaryCompositeExporter',
+                                httpMode: 'GET',
+                                customHeaders: [[name: "Authorization", value: "Bearer ${inputdata}"]],
+                                acceptType: 'APPLICATION_JSON',
+                                responseHandle: 'NONE',
+                                timeout: 60,
+                                validResponseCodes: '200',
+                                ignoreSslErrors: true,
+                            )
+
+                  // Capture the response status code and content
+                    def ThirdstatusCode = resthree.getStatus()
+                    def ThirdresponseBody = resthree.getContent()
+
+                    echo "Response Status Code: ${ThirdstatusCode}"
+                    echo "Response Body: ${ThirdresponseBody}"
+                    }
+                }
+                
+                    else{
                         error("Second endpoint request failed with status code ${SecondstatusCode}")
                     }
+
                 }
             }
         }
