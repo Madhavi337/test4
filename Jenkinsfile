@@ -40,7 +40,7 @@ pipeline {
                     // Step 2: Call the Second Endpoint to get no of Carfiles Deployed
                     echo "AccessTokenFirst: ${inputdata}"
                     def res = httpRequest(
-                        url: 'https://localhost:9164/management/applications',
+                        url: 'https://localhost:9164/management/applications?carbonAppName=SuccessSampleGuarantyDelivaryCompositeExporter',
                         httpMode: 'GET',
                         customHeaders: [[name: "Authorization", value: "Bearer ${inputdata}"]],
                         acceptType: 'APPLICATION_JSON',
