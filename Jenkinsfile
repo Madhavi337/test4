@@ -58,13 +58,13 @@ pipeline {
                     echo "Response Status Code: ${SecondstatusCode}"
                     echo "Response Body: ${SecondresponseBody}"
 
-                    if (SecondstatusCode == 200) {
-                        def jsonResponseSecond = new groovy.json.JsonSlurper().parseText(SecondresponseBody)
-                        echo "Parsed JSON Response Second: ${jsonResponseSecond}"
+                    // //if (SecondstatusCode == 200) {
+                    //     def jsonResponseSecond = new groovy.json.JsonSlurper().parseText(SecondresponseBody)
+                    //     echo "Parsed JSON Response Second: ${jsonResponseSecond}"
                         
-                    } else {
-                        echo "Second endpoint request  with status code ${SecondstatusCode}"
-                    }
+                    // } else {
+                    //     echo "Second endpoint request  with status code ${SecondstatusCode}"
+                    // }
 
 
                     if (SecondstatusCode != 200 && SecondstatusCode != 401) {
@@ -121,10 +121,15 @@ pipeline {
                                 }
 
 
-                    } else {
-                        error("Second endpoint request failed with status code ${SecondstatusCode}")
-                    }
-                }
+                    } else 
+                        if (SecondstatusCode == 200) {
+                         def jsonResponseSecond = new groovy.json.JsonSlurper().parseText(SecondresponseBody)
+                        echo "Parsed JSON Response Second: ${jsonResponseSecond}"
+
+                            }
+                            else {
+                                echo "Second endpoint request  with status code ${SecondstatusCode}"
+                            }
             }
         }
     }
