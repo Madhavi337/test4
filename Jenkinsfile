@@ -4,7 +4,7 @@ pipeline {
     environment {
         inputdata = '' // Define inputdata at the pipeline level
         carbonAppName = 'SuccessSampleGuarantyDelivaryCompositeExporter'
-        jobName = 'Your_Job_Name' // Replace with your Jenkins job name
+        customJobName = "MyJob-${BUILD_NUMBER}" // Replace with your Jenkins job name
     }
 
     stages {
@@ -145,24 +145,24 @@ pipeline {
                     } else {
                         echo "The current build was not successful."
 
-                        def job = Jenkins.instance.getItem(jobName)
+                        def job = jenkins.model.Jenkins.instance.getItemByFullName(customJobName)
                         def lastBuild = job.getLastBuild()
 
-                        if (lastBuild.resultIsWorseThan('SUCCESS')) {
-                            // The last build was unsuccessful, find the last successful build
-                            def lastSuccessfulBuild = job.getLastSuccessfulBuild()
+                        def currentBuildStatus = currentBuild.result
+                def job = jenkins.model.Jenkins.instance.getItemByFullName(env.customJobName) // Use the generated job name
 
-                            if (lastSuccessfulBuild) {
-                                echo "The last successful build (Build #${lastSuccessfulBuild.number}) was successful."
-
-                                // Trigger a new build based on the last successful build
-                                build(job: jobName, parameters: [[$class: 'RebuildSettings', rebuild: true]])
-                            } else {
-                                error "No last successful build found for $jobName"
-                            }
-                        } else {
-                            echo "The last build was successful."
-                        }
+                if (currentBuildStatus == 'FAILURE') {
+                    def lastSuccessfulBuild = job.getLastSuccessfulBuild()
+                    
+                    if (lastSuccessfulBuild) {
+                        echo "The last successful build (Build #${lastSuccessfulBuild.number}) was successful."
+                        build(job: customJobName, parameters: [[$class: 'RebuildSettings', rebuild: true]])
+                    } else {
+                        error "No last successful build found for ${env.customJobName}"
+                    }
+                } else {
+                    echo "The current build was successful."
+                }
                     }
                 }
             }
