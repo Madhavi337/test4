@@ -149,7 +149,7 @@ pipeline {
                         echo "The last successful build (Build #${lastSuccessfulBuild.number}) was successful."
                         build(job: job.name, parameters: [[$class: 'RebuildSettings', rebuild: true]])
                     } else {
-                        error "No last successful build found for ${env.JOB_NAME}"
+                        error "No last successful build found for ${env.customJobName}"
                     }
                 } else {
                     echo "The current build was successful."
