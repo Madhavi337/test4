@@ -138,24 +138,25 @@ pipeline {
         stage('Check Build Status') {
             steps {
                 script {
+                    def currentBuildStatus = currentBuild.result
 
-                def currentBuildStatus = currentBuild.result
-                def job = Jenkins.instance.getItem(env.JOB_NAME) // Use the generated job name
-
-                if (currentBuildStatus == 'FAILURE') {
-                    def lastSuccessfulBuild = job.getLastSuccessfulBuild()
-                    
-                    if (lastSuccessfulBuild) {
-                        echo "The last successful build (Build #${lastSuccessfulBuild.number}) was successful."
-                        build(job: job.name, parameters: [[$class: 'RebuildSettings', rebuild: true]])
+                    if (currentBuildStatus == 'SUCCESS') {
+                        echo "The current build was successful."
                     } else {
-                        error "No last successful build found for ${env.customJobName}"
-                    }
-                } else {
-                    echo "The current build was successful."
-                }
+                        echo "The current build was not successful."
+
+                        def lastBuild = build(job: customJobName, propagate: false, wait: false)
+                        if (lastBuild.resultIsWorseThan('SUCCESS')) {
+                            def lastSuccessfulBuild = build(job: customJobName, propagate: false, wait: true, parameters: [[$class: 'RebuildSettings', rebuild: true]])
+                            if (lastSuccessfulBuild.resultIsBetterThan('SUCCESS')) {
+                                echo "The last successful build (Build #${lastSuccessfulBuild.number}) was successful."
+                            } else {
+                                error "No last successful build found for ${customJobName}"
+                            }
+                        }
                     }
                 }
             }
         }
     }
+}
