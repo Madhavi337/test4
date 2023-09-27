@@ -4,7 +4,7 @@ pipeline {
     environment {
         inputdata = '' // Define inputdata at the pipeline level
         carbonAppName = 'SuccessSampleGuarantyDelivaryCompositeExporter'
-        customJobName = "MyJob-${BUILD_NUMBER}" // Replace with your Jenkins job name
+        customJobName = ${BUILD_NUMBER} // Replace with your Jenkins job name
     }
 
     stages {
