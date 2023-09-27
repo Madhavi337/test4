@@ -4,6 +4,7 @@ pipeline {
     environment {
         inputdata = '' // Define inputdata at the pipeline level
         carbonAppName = 'SuccessSampleGuarantyDelivaryCompositeExporter'
+        jobName = 'Your_Job_Name' // Replace with your Jenkins job name
     }
 
     stages {
@@ -133,6 +134,32 @@ pipeline {
             }
         }
     }
+        stage('Check Last Build Status') {
+            steps {
+                script {
+                    //def jobName = "Your_Job_Name" // Replace with your Jenkins job name
+                    def job = Jenkins.instance.getItem(jobName)
+                    def lastBuild = job.getLastBuild()
+                    
+                    if (lastBuild.resultIsWorseThan('SUCCESS')) {
+                        // The last build was unsuccessful, find the last successful build
+                        def lastSuccessfulBuild = job.getLastSuccessfulBuild()
+                        
+                        if (lastSuccessfulBuild) {
+                            echo "The last successful build (Build #${lastSuccessfulBuild.number}) was successful."
+                            
+                            // Trigger a new build based on the last successful build
+                            build(job: job, parameters: [[$class: 'RebuildSettings', rebuild: true]])
+                        } else {
+                            error "No last successful build found for $jobName"
+                        }
+                    } else {
+                        echo "The last build was successful."
+                    }
+                }
+            }
+        }
+    }
 }
 
-}
+                
