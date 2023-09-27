@@ -138,27 +138,18 @@ pipeline {
         stage('Check Build Status') {
             steps {
                 script {
-                    def currentBuildStatus = currentBuild.result
 
-                    if (currentBuildStatus == 'SUCCESS') {
-                        echo "The current build was successful."
-                    } else {
-                        echo "The current build was not successful."
-
-                        def job = jenkins.model.Jenkins.instance.getItemByFullName(customJobName)
-                        def lastBuild = job.getLastBuild()
-
-                        def currentBuildStatus = currentBuild.result
-                def job = jenkins.model.Jenkins.instance.getItemByFullName(env.customJobName) // Use the generated job name
+                def currentBuildStatus = currentBuild.result
+                def job = Jenkins.instance.getItem(env.JOB_NAME) // Use the generated job name
 
                 if (currentBuildStatus == 'FAILURE') {
                     def lastSuccessfulBuild = job.getLastSuccessfulBuild()
                     
                     if (lastSuccessfulBuild) {
                         echo "The last successful build (Build #${lastSuccessfulBuild.number}) was successful."
-                        build(job: customJobName, parameters: [[$class: 'RebuildSettings', rebuild: true]])
+                        build(job: job.name, parameters: [[$class: 'RebuildSettings', rebuild: true]])
                     } else {
-                        error "No last successful build found for ${env.customJobName}"
+                        error "No last successful build found for ${env.JOB_NAME}"
                     }
                 } else {
                     echo "The current build was successful."
@@ -168,4 +159,3 @@ pipeline {
             }
         }
     }
-}
