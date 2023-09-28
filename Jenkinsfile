@@ -13,8 +13,7 @@ pipeline {
         stage('Call Management API') { // A single stage that encompasses both steps
             steps {
                 script {
-                    def jobName = env.JOB_NAME
-                    echo "Current Job Name: ${jobName}"
+                    
                     // Step 1: Call the First Endpoint for Access Token
                     def response = httpRequest(
                         url: 'https://localhost:9164/management/login',
@@ -146,6 +145,9 @@ pipeline {
 
     steps {
         script {
+            def jobName = env.JOB_NAME
+            echo "Current Job Name: ${jobName}"
+            
             def currentBuildStatus = currentBuild.result
 
             if (currentBuildStatus == 'SUCCESS') {
