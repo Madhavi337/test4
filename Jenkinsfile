@@ -10,8 +10,6 @@ pipeline {
             steps {
                 script {
                     
-                    def buildName = Jenkins.instance.getItem('jobName').lastSuccessfulBuild.displayName
-                    echo "buildName: ${buildName}"
                     // Step 1: Call the First Endpoint for Access Token
                     def response = httpRequest(
                         url: 'https://localhost:9164/management/login',
