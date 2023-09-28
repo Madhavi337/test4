@@ -4,7 +4,7 @@ pipeline {
     environment {
         inputdata = '' // Define inputdata at the pipeline level
         carbonAppName = 'SuccessSampleGuarantyDelivaryCompositeExporter'
-        customJobName = "${jobName}"
+        
                     
 
     }
@@ -147,7 +147,7 @@ pipeline {
         script {
             def jobName = env.JOB_NAME
             echo "Current Job Name: ${jobName}"
-            
+
             def currentBuildStatus = currentBuild.result
 
             if (currentBuildStatus == 'SUCCESS') {
