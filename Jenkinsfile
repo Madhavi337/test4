@@ -141,8 +141,7 @@ pipeline {
     
 // stage to Check Current Build Status
         stage('Check Build Status') {
-            def jobName = env.JOB_NAME // Define jobName here
-            echo "Current Job Name: ${jobName}"
+            
 
     steps {
         script {
