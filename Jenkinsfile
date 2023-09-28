@@ -8,6 +8,8 @@ pipeline {
                     
 
     }
+    def jobName = env.JOB_NAME // Define jobName here
+    echo "Current Job Name: ${jobName}"
 
     stages {
         stage('Call Management API') { // A single stage that encompasses both steps
@@ -141,6 +143,9 @@ pipeline {
     
 // stage to Check Current Build Status
         stage('Check Build Status') {
+            def jobName = env.JOB_NAME // Define jobName here
+            echo "Current Job Name: ${jobName}"
+
     steps {
         script {
             def currentBuildStatus = currentBuild.result
