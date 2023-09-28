@@ -8,8 +8,6 @@ pipeline {
                     
 
     }
-    def jobName = env.JOB_NAME // Define jobName here
-    echo "Current Job Name: ${jobName}"
 
     stages {
         stage('Call Management API') { // A single stage that encompasses both steps
