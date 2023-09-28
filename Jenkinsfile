@@ -149,13 +149,13 @@ pipeline {
                     } else {
                         echo "The current build was not successful."
 
-                        def lastBuild = build(job: customJobName, propagate: false, wait: false)
+                        def lastBuild = build(job: ${jobName}, propagate: false, wait: false)
                         if (lastBuild.resultIsWorseThan('SUCCESS')) {
-                            def lastSuccessfulBuild = build(job: customJobName, propagate: false, wait: true, parameters: [[$class: 'RebuildSettings', rebuild: true]])
+                            def lastSuccessfulBuild = build(job: ${jobName}, propagate: false, wait: true, parameters: [[$class: 'RebuildSettings', rebuild: true]])
                             if (lastSuccessfulBuild.resultIsBetterThan('SUCCESS')) {
                                 echo "The last successful build (Build #${lastSuccessfulBuild.number}) was successful."
                             } else {
-                                error "No last successful build found for ${customJobName}"
+                                error "No last successful build found for ${jobName}"
                             }
                         }
                     }
