@@ -1,15 +1,23 @@
+// Define jobName here
+def jobName = env.JOB_NAME
+
 pipeline {
     agent any
-
     environment {
         inputdata = '' // Define inputdata at the pipeline level
         carbonAppName = 'SuccessSampleGuarantyDelivaryCompositeExporter'
+        customJobName = "${jobName}"
+                    
+
     }
 
     stages {
         stage('Call Management API') { // A single stage that encompasses both steps
             steps {
                 script {
+                    
+                    def buildName = Jenkins.instance.getItem('jobName').lastSuccessfulBuild.displayName
+                    echo "buildName: ${buildName}"
                     // Step 1: Call the First Endpoint for Access Token
                     def response = httpRequest(
                         url: 'https://localhost:9164/management/login',
@@ -133,6 +141,33 @@ pipeline {
             }
         }
     }
-}
+    
+// stage to Check Current Build Status
+        stage('Check Build Status') {
+            
 
+    steps {
+        script {
+            echo "Current Job Name: ${jobName}"
+            def currentBuildStatus = currentBuild.result
+
+            if (currentBuildStatus == 'SUCCESS') {
+                echo "The current build was successful."
+            } else {
+                echo "The current build was not successful."
+
+                def lastBuild = build(job: "${jobName}", propagate: false, wait: false)
+                if (lastBuild.resultIsWorseThan('SUCCESS')) {
+                    def lastSuccessfulBuild = build(job: "${jobName}", propagate: false, wait: true, parameters: [[$class: 'RebuildSettings', rebuild: true]])
+                    if (lastSuccessfulBuild.resultIsBetterThan('SUCCESS')) {
+                        echo "The last successful build (Build #${lastSuccessfulBuild.number}) was successful."
+                    } else {
+                        error "No last successful build found for ${jobName}"
+                    }
+                }
+            }
+        }
+    }
 }
+        }
+            }
