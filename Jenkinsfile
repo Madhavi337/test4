@@ -146,7 +146,8 @@ pipeline {
         stage('Trigger Specific Build') {
             steps {
                 script {
-                    def jobName = 'SampleSYSProject/master' // Replace with the name of your Jenkins job
+                    echo "Current Job Name: ${jobName}"
+                     jobName = "${jobName}" // Replace with the name of your Jenkins job
                     def buildNumber = '100' // Replace with the build number you want to trigger
 
                     def triggeredBuild = build(job: jobName, parameters: [[$class: 'StringParameterValue', name: 'BUILD_NUMBER', value: buildNumber]])
