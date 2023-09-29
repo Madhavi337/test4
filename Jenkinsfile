@@ -149,10 +149,8 @@ pipeline {
             steps {
                 script {
                     def projectToTrigger = 'sysAPI'
-                    def lastSuccessfulBuild = jenkins.model.Jenkins.instance.getItem(projectToTrigger).getLastSuccessfulBuild()
-
- 
-
+                    def lastSuccessfulBuild =  "100"  //jenkins.model.Jenkins.instance.getItem(projectToTrigger).getLastSuccessfulBuild()
+                              //  currentBuild.rawBuild.getParent().getJob('AnotherJobName').getLastSuccessfulBuild()
                     if (lastSuccessfulBuild) {
                         build(job: projectToTrigger, parameters: [], propagate: false)
                     } else {
