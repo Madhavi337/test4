@@ -1,25 +1,15 @@
-// Define jobName here
-import jenkins.model.Jenkins
-import hudson.model.AbstractProject
-def jobName = env.JOB_NAME
-
 pipeline {
     agent any
+
     environment {
         inputdata = '' // Define inputdata at the pipeline level
         carbonAppName = 'SuccessSampleGuarantyDelivaryCompositeExporter'
-        customJobName = "${jobName}"
-                    
-
     }
-    options {         disableConcurrentBuilds()     }
+
     stages {
-        
         stage('Call Management API') { // A single stage that encompasses both steps
             steps {
                 script {
-                   
-                    echo "Current Job Name: ${jobName}"
                     // Step 1: Call the First Endpoint for Access Token
                     def response = httpRequest(
                         url: 'https://localhost:9164/management/login',
@@ -68,15 +58,6 @@ pipeline {
                     echo "Response Status Code: ${SecondstatusCode}"
                     echo "Response Body: ${SecondresponseBody}"
 
-                    // //if (SecondstatusCode == 200) {
-                    //     def jsonResponseSecond = new groovy.json.JsonSlurper().parseText(SecondresponseBody)
-                    //     echo "Parsed JSON Response Second: ${jsonResponseSecond}"
-                        
-                    // } else {
-                    //     echo "Second endpoint request  with status code ${SecondstatusCode}"
-                    // }
-
-
                     if (SecondstatusCode != 200 && SecondstatusCode != 401) {
                         // Step 2: Call the third Endpoint to get the number of Carfiles Deployed
                                 echo "AccessTokenFirst: ${inputdata}"
@@ -89,7 +70,6 @@ pipeline {
                                     timeout: 60,
                                     validResponseCodes: '200',
                                     ignoreSslErrors: true,
-
                                 )
                                 echo "Second endpoint request failed with status code ${SecondstatusCode}"
                                 
@@ -130,51 +110,11 @@ pipeline {
                                     error("Third endpoint request failed with status code ${ThirdstatusCode}")
                                 }
 
-
-                    } else 
-                        if (SecondstatusCode == 200) {
-                         def jsonResponseSecond = new groovy.json.JsonSlurper().parseText(SecondresponseBody)
-                        echo "Parsed JSON Response Second: ${jsonResponseSecond}"
-
-                            }
-                            else {
-                                echo "Second endpoint request  with status code ${SecondstatusCode}"
-                            }
-            }
-        }
-    } 
-    
-// stage to Check Current Build Status
-        stage('Trigger Specific Build') {
-            steps {
-                script {
-                    echo "Current Job Name: ${jobName}"
-                     jobName = "${jobName}" // Replace with the name of your Jenkins job SampleSYSProject/master
-                    def buildNumber = '100' // Replace with the build number you want to trigger
-
-                    //def triggeredBuild = build(job: jobName, parameters: [[$class: 'StringParameterValue', name: 'BUILD_NUMBER', value: buildNumber]])
-
-                    // if (triggeredBuild.resultIsBetterOrEqualTo('SUCCESS')) {
-                    //     echo "Triggered build #${buildNumber} of job ${jobName} was successful."
-                    // } else {
-                    //     error "Failed to trigger build #${buildNumber} of job ${jobName}."
-                    // }
-                    def job = Jenkins.instance.getItem(jobName)
-                     echo "Instance item: ${job}"
-
-                    def lastSuccessfulBuild = job.getLastSuccessfulBuild()   
-                     echo "Last successfull build: ${lastSuccessfulBuild}"
-                           // Get the last successful build 
-                    lastSuccessfulBuild.scheduleBuild2(0)
-                     echo "Current Job Name: success"
-
-
+                    } else {
+                        error("Second endpoint request failed with status code ${SecondstatusCode}")
+                    }
                 }
             }
         }
-        }
+    }
 }
-    
-            
-        
-
