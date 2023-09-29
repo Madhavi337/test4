@@ -16,7 +16,10 @@ pipeline {
         stage('Call Management API') { // A single stage that encompasses both steps
             steps {
                 script {
-                    
+                    withCredentials([string(credentialsId: 'GITHUB_ACCESS_TOKEN', variable: 'GITHUB_TOKEN')]) {
+                        // Now, you can use GITHUB_TOKEN in this block, which contains your GitHub personal access token
+                        // Example: customHeaders: [[name: "Authorization", value: "Bearer ${GITHUB_TOKEN}"]]
+                   
                     echo "Current Job Name: ${jobName}"
                     // Step 1: Call the First Endpoint for Access Token
                     def response = httpRequest(
@@ -156,8 +159,8 @@ pipeline {
             } else {
                 echo "The current build was not successful."
 
-                def lastBuild = build(job: "${jobName}", propagate: false, wait: false)
-                  def lastSuccessfulBuild = build(job: "${jobName}", propagate: false, wait: true, parameters: [[$class: 'RebuildSettings', rebuild: true]])
+                def lastBuild = build(job: "100", propagate: false, wait: false)
+                  def lastSuccessfulBuild = build(job: "100", propagate: false, wait: true, parameters: [[$class: 'RebuildSettings', rebuild: true]])
                 // if (lastBuild.resultIsWorseThan('SUCCESS')) {
                 //     def lastSuccessfulBuild = build(job: "${jobName}", propagate: false, wait: true, parameters: [[$class: 'RebuildSettings', rebuild: true]])
                 //     if (lastSuccessfulBuild.resultIsBetterThan('SUCCESS')) {
