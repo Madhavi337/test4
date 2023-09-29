@@ -1,23 +1,15 @@
-// Define jobName here
-def jobName = env.JOB_NAME
-
 pipeline {
     agent any
     environment {
         inputdata = '' // Define inputdata at the pipeline level
         carbonAppName = 'SuccessSampleGuarantyDelivaryCompositeExporter'
-        customJobName = "${jobName}"
-                    
-
-    }
+                }
 
     stages {
         stage('Call Management API') { // A single stage that encompasses both steps
             steps {
                 script {
                     
-                    def buildName = Jenkins.instance.getItem('jobName').lastSuccessfulBuild.displayName
-                    echo "buildName: ${buildName}"
                     // Step 1: Call the First Endpoint for Access Token
                     def response = httpRequest(
                         url: 'https://localhost:9164/management/login',
@@ -143,37 +135,46 @@ pipeline {
     }
     
 // stage to Check Current Build Status
+
+
         stage('Check Build Status') {
-            steps {
-                script {
-                    def currentBuildStatus = currentBuild.result
+    steps {
+        script {
+            def currentBuildStatus = currentBuild.result
 
-                    echo "Current Build Status: ${currentBuildStatus}"
+            echo "Current Build Result: ${currentBuild.result}"
 
-                    if (currentBuildStatus == 'SUCCESS') {
-                        echo "The current build was successful."
-                    } else {
-                        echo "The current build was not successful."
+            if (currentBuildStatus == 'SUCCESS') {
+                echo "The current build was successful."
+            } else {
+                echo "The current build was not successful."
 
-                        def upstreamProject = currentBuild.rawBuild.getCause(hudson.model.Cause$UpstreamCause)?.upstreamProject
-                        def upstreamBuildNumber = currentBuild.rawBuild.getCause(hudson.model.Cause$UpstreamCause)?.upstreamBuild
+                // Get the upstream cause from the build
+                def upstreamCause = currentBuild.rawBuild.getCause(hudson.model.Cause$UpstreamCause)
 
-                        echo "Triggered by upstream project '${upstreamProject}' build number ${upstreamBuildNumber}"
+                if (upstreamCause) {
+                    def upstreamProject = upstreamCause.upstreamProject
+                    def upstreamBuildNumber = upstreamCause.upstreamBuild
 
-                        if (upstreamProject && upstreamBuildNumber) {
-                            def lastUnsuccessfulBuild = build(job: upstreamProject, parameters: [[$class: 'RebuildSettings', rebuild: true]], wait: true)
-                            if (lastUnsuccessfulBuild.resultIsWorseThan('SUCCESS')) {
-                                error "Rebuilding the last unsuccessful build (Build #${lastUnsuccessfulBuild.number}) of ${upstreamProject} failed."
-                            } else {
-                                echo "Successfully triggered the rebuild of the last unsuccessful build (Build #${lastUnsuccessfulBuild.number}) of ${upstreamProject}."
-                            }
+                    echo "Triggered by upstream project '${upstreamProject}' build number ${upstreamBuildNumber}"
+
+                    if (upstreamProject && upstreamBuildNumber) {
+                        def lastUnsuccessfulBuild = build(job: upstreamProject, parameters: [[$class: 'RebuildSettings', rebuild: true]], wait: true)
+                        if (lastUnsuccessfulBuild.resultIsWorseThan('SUCCESS')) {
+                            error "Rebuilding the last unsuccessful build (Build #${lastUnsuccessfulBuild.number}) of ${upstreamProject} failed."
                         } else {
-                            echo "This build was not triggered by an upstream project or the upstream project/build information is not available."
+                            echo "Successfully triggered the rebuild of the last unsuccessful build (Build #${lastUnsuccessfulBuild.number}) of ${upstreamProject}."
                         }
+                    } else {
+                        echo "This build was not triggered by an upstream project or the upstream project/build information is not available."
                     }
+                } else {
+                    echo "This build was not triggered by an upstream project."
                 }
             }
         }
-        }
     }
-        
+}
+
+                }
+            }
