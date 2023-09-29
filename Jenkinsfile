@@ -67,7 +67,7 @@ pipeline {
                             // Step 2: Call the third Endpoint to get the number of Carfiles Deployed
                             echo "AccessTokenFirst: ${inputdata}"
                             def resthree = httpRequest(
-                                url: 'https://localhost:9164/management/applications',
+                                url: '',
                                 httpMode: 'GET',
                                 customHeaders: [[name: "Authorization", value: "Bearer ${inputdata}"]],
                                 acceptType: 'APPLICATION_JSON',
