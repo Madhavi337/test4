@@ -133,10 +133,11 @@ pipeline {
         stage('Check Build Status') {
             steps {
                 script {
-                    echo "currentBuildStatus2: ${currentBuildStatus}"
+                    
                     echo "Current Job Name: ${jobName}"
                     def currentBuildStatus = currentBuild.result
                     echo "currentBuildStatus: ${currentBuildStatus}"
+                    echo "currentBuildStatus2: ${currentBuildStatus}"
                     if (currentBuildStatus == 'SUCCESS') {
                         echo "The current build was successful."
                     } else {
