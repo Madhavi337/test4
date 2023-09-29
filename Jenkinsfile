@@ -136,8 +136,7 @@ pipeline {
     
 // stage to Check Current Build Status
 
-post {
-        always {
+
         stage('Check Build Status') {
     steps {
         script {
@@ -181,5 +180,3 @@ post {
             }
         
         
-    }
-}
