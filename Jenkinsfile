@@ -150,7 +150,7 @@ pipeline {
                      jobName = "${jobName}" // Replace with the name of your Jenkins job SampleSYSProject/master
                     def buildNumber = '100' // Replace with the build number you want to trigger
 
-                    def triggeredBuild = build(job: jobName, parameters: [[$class: 'StringParameterValue', name: 'BUILD_NUMBER', value: buildNumber]])
+                    //def triggeredBuild = build(job: jobName, parameters: [[$class: 'StringParameterValue', name: 'BUILD_NUMBER', value: buildNumber]])
 
                     // if (triggeredBuild.resultIsBetterOrEqualTo('SUCCESS')) {
                     //     echo "Triggered build #${buildNumber} of job ${jobName} was successful."
