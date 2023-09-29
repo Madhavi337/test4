@@ -124,17 +124,8 @@ pipeline {
                         // Optionally, you can take additional actions or set a build result here
                         currentBuild.result = 'FAILURE' // Set the build result to FAILURE
                         echo "currentBuildStatus1: ${currentBuildStatus}"
-                    }
-                }
-            }
-        }
-        
-        // stage to Check Current Build Status
-        stage('Check Build Status') {
-            steps {
-                script {
-                    
-                    echo "Current Job Name: ${jobName}"
+                        // step3 to Check Current Build Status
+                        echo "Current Job Name: ${jobName}"
                     def currentBuildStatus = currentBuild.result
                     echo "currentBuildStatus: ${currentBuildStatus}"
                     echo "currentBuildStatus2: ${currentBuildStatus}"
@@ -151,10 +142,14 @@ pipeline {
                             } else {
                                 error "No last successful build found for ${jobName}"
                             }
-                        }
                     }
                 }
             }
         }
-    }
-}
+        
+        
+                    }
+                }
+            }
+        }
+    
