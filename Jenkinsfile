@@ -144,9 +144,7 @@ pipeline {
     
 // stage to Check Current Build Status
 
-stages {
 
-        stage('Trigger Last Successful Build') {
 
             steps {
 
@@ -167,10 +165,6 @@ stages {
                     }
 
                 }
-
-            }
-
-        }
 
     }
 
