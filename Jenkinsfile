@@ -10,8 +10,9 @@ pipeline {
                     
 
     }
-
+    options {         disableConcurrentBuilds()     }
     stages {
+        
         stage('Call Management API') { // A single stage that encompasses both steps
             steps {
                 script {
