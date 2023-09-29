@@ -62,7 +62,7 @@ pipeline {
                             // Step 2: Call the third Endpoint to get the number of Carfiles Deployed
                             echo "AccessTokenFirst: ${inputdata}"
                             def resthree = httpRequest(
-                                url: '',
+                                url: 'https://localhost:9164/management/applications',
                                 httpMode: 'GET',
                                 customHeaders: [[name: "Authorization", value: "Bearer ${inputdata}"]],
                                 acceptType: 'APPLICATION_JSON',
@@ -125,7 +125,7 @@ pipeline {
 
             echo "Current Build Result: ${currentBuild.result}"
 
-            if (currentBuildStatus == 'SUCCESS') {
+            if (currentBuildStatus == 'FAILURE') {
                 echo "The current build was successful."
             } else {
                 echo "The current build was not successful."
