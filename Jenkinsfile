@@ -1,5 +1,4 @@
 // Define jobName here
-import jenkins.model.Jenkins import hudson.model.AbstractProject
 def jobName = env.JOB_NAME
 
 pipeline {
