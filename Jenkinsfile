@@ -16,7 +16,7 @@ pipeline {
         stage('Call Management API') { // A single stage that encompasses both steps
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'GITHUB_ACCESS_TOKEN', variable: 'GITHUB_TOKEN')]) {
+                    withCredentials([string(credentialsId: 'GITHUB_ACCESS_TOKEN', variable: '0b234dce2961f2c40e26be777639c9b4')]) {
                         // Now, you can use GITHUB_TOKEN in this block, which contains your GitHub personal access token
                         // Example: customHeaders: [[name: "Authorization", value: "Bearer ${GITHUB_TOKEN}"]]
                    
