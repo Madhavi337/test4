@@ -145,24 +145,22 @@ pipeline {
 // stage to Check Current Build Status
         
 
-    stages {
-        stage('Trigger Last Successful Build') {
-            steps {
-                script {
-                    def projectToTrigger = 'sysAPI'
-                    def lastSuccessfulBuild = jenkins.model.Jenkins.instance.getItem(projectToTrigger).getLastSuccessfulBuild()
+ stage('Trigger Last Successful Build') {
+            steps {
+                script {
+                    def projectToTrigger = 'sysAPI'
+                    def lastSuccessfulBuild = jenkins.model.Jenkins.instance.getItem(projectToTrigger).getLastSuccessfulBuild()
 
+ 
 
-
-                    if (lastSuccessfulBuild) {
-                        build(job: projectToTrigger, parameters: [], propagate: false)
-                    } else {
-                        error("No successful builds found for ${projectToTrigger}")
-                    }
-                }
-            }
-        }
-    }
+                    if (lastSuccessfulBuild) {
+                        build(job: projectToTrigger, parameters: [], propagate: false)
+                    } else {
+                        error("No successful builds found for ${projectToTrigger}")
+                    }
+                }
+            }
+        }
 
 
 
