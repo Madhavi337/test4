@@ -143,7 +143,7 @@ pipeline {
                             }
             }
         }
-    }
+    } }
     
 // stage to Check Current Build Status
         stage('Check Build Status') {
@@ -176,4 +176,4 @@ pipeline {
         }
             }
         
-}
+
