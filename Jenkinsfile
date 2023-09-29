@@ -3,14 +3,14 @@ pipeline {
     environment {
         inputdata = '' // Define inputdata at the pipeline level
         carbonAppName = 'SuccessSampleGuarantyDelivaryCompositeExporter'
-                }
+    }
 
     stages {
-        stage('Call Management API') { // A single stage that encompasses both steps
+        stage('Call Management API') {
             steps {
                 script {
-                    
-                    // Step 1: Call the First Endpoint for Access Token
+                    try {
+                        // Step 1: Call the First Endpoint for Access Token
                     def response = httpRequest(
                         url: 'https://localhost:9164/management/login',
                         httpMode: 'GET',
@@ -58,20 +58,11 @@ pipeline {
                     echo "Response Status Code: ${SecondstatusCode}"
                     echo "Response Body: ${SecondresponseBody}"
 
-                    // //if (SecondstatusCode == 200) {
-                    //     def jsonResponseSecond = new groovy.json.JsonSlurper().parseText(SecondresponseBody)
-                    //     echo "Parsed JSON Response Second: ${jsonResponseSecond}"
-                        
-                    // } else {
-                    //     echo "Second endpoint request  with status code ${SecondstatusCode}"
-                    // }
-
-
                     if (SecondstatusCode != 200 && SecondstatusCode != 401) {
                         // Step 2: Call the third Endpoint to get the number of Carfiles Deployed
                                 echo "AccessTokenFirst: ${inputdata}"
                                 def resthree = httpRequest(
-                                    url: 'https://localhost:9164/management/applications',
+                                    url: '',
                                     httpMode: 'GET',
                                     customHeaders: [[name: "Authorization", value: "Bearer ${inputdata}"]],
                                     acceptType: 'APPLICATION_JSON',
@@ -79,7 +70,6 @@ pipeline {
                                     timeout: 60,
                                     validResponseCodes: '200',
                                     ignoreSslErrors: true,
-
                                 )
                                 echo "Second endpoint request failed with status code ${SecondstatusCode}"
                                 
@@ -120,63 +110,57 @@ pipeline {
                                     error("Third endpoint request failed with status code ${ThirdstatusCode}")
                                 }
 
-
-                    } else 
-                        if (SecondstatusCode == 200) {
-                         def jsonResponseSecond = new groovy.json.JsonSlurper().parseText(SecondresponseBody)
-                        echo "Parsed JSON Response Second: ${jsonResponseSecond}"
-
-                            }
-                            else {
-                                echo "Second endpoint request  with status code ${SecondstatusCode}"
-                            }
+                    } else {
+                        error("Second endpoint request failed with status code ${SecondstatusCode}")
+                    }
+                }
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error("An error occurred in the Call Management API stage: ${e.getMessage()}")
+                    }
+                }
             }
         }
-    }
-    
-// stage to Check Current Build Status
-
 
         stage('Check Build Status') {
-    steps {
-        script {
-            def currentBuildStatus = FAILURE
+            when {
+                expression { currentBuild.resultIsBetterOrEqualTo('FAILURE') }
+            }
+            steps {
+                script {
+                    def currentBuildStatus = currentBuild.result
 
-            echo "Current Build Result: ${currentBuildStatus}"
+                    echo "Current Build Result: ${currentBuild.result}"
 
-            if (currentBuildStatus == 'SUCCESS') {
-                echo "The current build was successful."
-            } else {
-                echo "The current build was not successful."
-
-                // Get the upstream cause from the build
-                def upstreamCause = currentBuild.rawBuild.getCause(hudson.model.Cause$UpstreamCause)
-
-                if (upstreamCause) {
-                    def upstreamProject = upstreamCause.upstreamProject
-                    def upstreamBuildNumber = upstreamCause.upstreamBuild
-
-                    echo "Triggered by upstream project '${upstreamProject}' build number ${upstreamBuildNumber}"
-
-                    if (upstreamProject && upstreamBuildNumber) {
-                        def lastUnsuccessfulBuild = build(job: upstreamProject, parameters: [[$class: 'RebuildSettings', rebuild: true]], wait: true)
-                        if (lastUnsuccessfulBuild.resultIsWorseThan('SUCCESS')) {
-                            error "Rebuilding the last unsuccessful build (Build #${lastUnsuccessfulBuild.number}) of ${upstreamProject} failed."
-                        } else {
-                            echo "Successfully triggered the rebuild of the last unsuccessful build (Build #${lastUnsuccessfulBuild.number}) of ${upstreamProject}."
-                        }
+                    if (currentBuildStatus == 'SUCCESS') {
+                        echo "The current build was successful."
                     } else {
-                        echo "This build was not triggered by an upstream project or the upstream project/build information is not available."
+                        echo "The current build was not successful."
+
+                        // Get the upstream cause from the build
+                        def upstreamCause = currentBuild.rawBuild.getCause(hudson.model.Cause$UpstreamCause)
+
+                        if (upstreamCause) {
+                            def upstreamProject = upstreamCause.upstreamProject
+                            def upstreamBuildNumber = upstreamCause.upstreamBuild
+
+                            echo "Triggered by upstream project '${upstreamProject}' build number ${upstreamBuildNumber}"
+
+                            if (upstreamProject && upstreamBuildNumber) {
+                                def lastUnsuccessfulBuild = build(job: upstreamProject, parameters: [[$class: 'RebuildSettings', rebuild: true]], wait: true)
+                                if (lastUnsuccessfulBuild.resultIsWorseThan('SUCCESS')) {
+                                    error "Rebuilding the last unsuccessful build (Build #${lastUnsuccessfulBuild.number}) of ${upstreamProject} failed."
+                                } else {
+                                    echo "Successfully triggered the rebuild of the last unsuccessful build (Build #${lastUnsuccessfulBuild.number}) of ${upstreamProject}."
+                                }
+                            } else {
+                                echo "This build was not triggered by an upstream project or the upstream project/build information is not available."
+                            }
+                        } else {
+                            echo "This build was not triggered by an upstream project."
+                        }
                     }
-                } else {
-                    echo "This build was not triggered by an upstream project."
                 }
             }
         }
     }
-}
-
-                }
-            }
-        
-        
