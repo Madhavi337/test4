@@ -1,4 +1,6 @@
 // Define jobName here
+import jenkins.model.Jenkins
+import hudson.model.AbstractProject
 def jobName = env.JOB_NAME
 
 pipeline {
@@ -158,7 +160,7 @@ pipeline {
                     //     error "Failed to trigger build #${buildNumber} of job ${jobName}."
                     // }
                     def job = Jenkins.instance.getItem(jobName)
-                     echo "Insytance item: ${job}"
+                     echo "Instance item: ${job}"
 
                     def lastSuccessfulBuild = job.getLastSuccessfulBuild()   
                      echo "Last successfull build: ${lastSuccessfulBuild}"
