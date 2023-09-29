@@ -123,6 +123,7 @@ pipeline {
                         echo "An error occurred in the 'Call Management API' stage: ${e.getMessage()}"
                         // Optionally, you can take additional actions or set a build result here
                         currentBuild.result = 'FAILURE' // Set the build result to FAILURE
+                        echo "currentBuildStatus1: ${currentBuildStatus}"
                     }
                 }
             }
@@ -132,6 +133,7 @@ pipeline {
         stage('Check Build Status') {
             steps {
                 script {
+                    echo "currentBuildStatus2: ${currentBuildStatus}"
                     echo "Current Job Name: ${jobName}"
                     def currentBuildStatus = currentBuild.result
                     echo "currentBuildStatus: ${currentBuildStatus}"
