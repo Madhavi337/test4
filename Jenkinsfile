@@ -119,43 +119,40 @@ pipeline {
         }
 
         stage('Check Build Status') {
-            when {
-                expression { currentBuild.resultIsBetterOrEqualTo('FAILURE') }
-            }
-            steps {
-                script {
-                    def currentBuildStatus = currentBuild.result
+    steps {
+        script {
+            def currentBuildStatus = currentBuild.result
 
-                    echo "Current Build Result: ${currentBuild.result}"
+            echo "Current Build Result: ${currentBuild.result}"
 
-                    if (currentBuildStatus == 'SUCCESS') {
-                        echo "The current build was successful."
-                    } else {
-                        echo "The current build was not successful."
+            if (currentBuildStatus == 'SUCCESS') {
+                echo "The current build was successful."
+            } else {
+                echo "The current build was not successful."
 
-                        // Get the upstream cause from the build
-                        def upstreamCause = currentBuild.rawBuild.getCause(hudson.model.Cause$UpstreamCause)
+                // Get the upstream cause from the build
+                def upstreamCause = currentBuild.rawBuild.getCause(hudson.model.Cause$UpstreamCause)
 
-                        if (upstreamCause) {
-                            def upstreamProject = upstreamCause.upstreamProject
-                            def upstreamBuildNumber = upstreamCause.upstreamBuild
+                if (upstreamCause) {
+                    def upstreamProject = upstreamCause.upstreamProject
+                    def upstreamBuildNumber = upstreamCause.upstreamBuild
 
-                            echo "Triggered by upstream project '${upstreamProject}' build number ${upstreamBuildNumber}"
+                    echo "Triggered by upstream project '${upstreamProject}' build number ${upstreamBuildNumber}"
 
-                            if (upstreamProject && upstreamBuildNumber) {
-                                def lastUnsuccessfulBuild = build(job: upstreamProject, parameters: [[$class: 'RebuildSettings', rebuild: true]], wait: true)
-                                if (lastUnsuccessfulBuild.resultIsWorseThan('SUCCESS')) {
-                                    error "Rebuilding the last unsuccessful build (Build #${lastUnsuccessfulBuild.number}) of ${upstreamProject} failed."
-                                } else {
-                                    echo "Successfully triggered the rebuild of the last unsuccessful build (Build #${lastUnsuccessfulBuild.number}) of ${upstreamProject}."
-                                }
-                            } else {
-                                echo "This build was not triggered by an upstream project or the upstream project/build information is not available."
-                            }
+                    if (upstreamProject && upstreamBuildNumber) {
+                        def lastUnsuccessfulBuild = build(job: upstreamProject, parameters: [[$class: 'RebuildSettings', rebuild: true]], wait: true)
+                        if (lastUnsuccessfulBuild.resultIsWorseThan('SUCCESS')) {
+                            error "Rebuilding the last unsuccessful build (Build #${lastUnsuccessfulBuild.number}) of ${upstreamProject} failed."
                         } else {
-                            echo "This build was not triggered by an upstream project."
+                            echo "Successfully triggered the rebuild of the last unsuccessful build (Build #${lastUnsuccessfulBuild.number}) of ${upstreamProject}."
                         }
+                    } else {
+                        echo "This build was not triggered by an upstream project or the upstream project/build information is not available."
                     }
+                } else {
+                    echo "This build was not triggered by an upstream project."
+                }
+            }
                 }
             }
         }
