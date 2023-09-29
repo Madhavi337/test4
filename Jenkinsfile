@@ -16,9 +16,6 @@ pipeline {
         stage('Call Management API') { // A single stage that encompasses both steps
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'GITHUB_ACCESS_TOKEN', variable: '0b234dce2961f2c40e26be777639c9b4')]) {
-                        // Now, you can use GITHUB_TOKEN in this block, which contains your GitHub personal access token
-                        // Example: customHeaders: [[name: "Authorization", value: "Bearer ${GITHUB_TOKEN}"]]
                    
                     echo "Current Job Name: ${jobName}"
                     // Step 1: Call the First Endpoint for Access Token
@@ -146,34 +143,24 @@ pipeline {
     } }
     
 // stage to Check Current Build Status
-        stage('Check Build Status') {
+        stage('Trigger Specific Build') {
+            steps {
+                script {
+                    def jobName = 'SampleSYSProject/master' // Replace with the name of your Jenkins job
+                    def buildNumber = '100' // Replace with the build number you want to trigger
+
+                    def triggeredBuild = build(job: jobName, parameters: [[$class: 'StringParameterValue', name: 'BUILD_NUMBER', value: buildNumber]])
+
+                    if (triggeredBuild.resultIsBetterOrEqualTo('SUCCESS')) {
+                        echo "Triggered build #${buildNumber} of job ${jobName} was successful."
+                    } else {
+                        error "Failed to trigger build #${buildNumber} of job ${jobName}."
+                    }
+                }
+            }
+        }
+        }
+    
             
-
-    steps {
-        script {
-            echo "Current Job Name: ${jobName}"
-            def currentBuildStatus = currentBuild.result
-
-            if (currentBuildStatus == 'SUCCESS') {
-                echo "The current build was successful."
-            } else {
-                echo "The current build was not successful."
-
-                def lastBuild = build(job: "100", propagate: false, wait: false)
-                  def lastSuccessfulBuild = build(job: "100", propagate: false, wait: true, parameters: [[$class: 'RebuildSettings', rebuild: true]])
-                // if (lastBuild.resultIsWorseThan('SUCCESS')) {
-                //     def lastSuccessfulBuild = build(job: "${jobName}", propagate: false, wait: true, parameters: [[$class: 'RebuildSettings', rebuild: true]])
-                //     if (lastSuccessfulBuild.resultIsBetterThan('SUCCESS')) {
-                //         echo "The last successful build (Build #${lastSuccessfulBuild.number}) was successful."
-                //     } else {
-                //         error "No last successful build found for ${jobName}"
-                //     }
-                // }
-            }
-        }
-    }
-}
-        }
-            }
         
 
