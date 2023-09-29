@@ -1,4 +1,5 @@
 // Define jobName here
+import jenkins.model.Jenkins import hudson.model.AbstractProject
 def jobName = env.JOB_NAME
 
 pipeline {
@@ -143,34 +144,36 @@ pipeline {
     } 
     
 // stage to Check Current Build Status
+        
+
+    stages {
+        stage('Trigger Last Successful Build') {
+            steps {
+                script {
+                    def projectToTrigger = 'sysAPI'
+                    def lastSuccessfulBuild = jenkins.model.Jenkins.instance.getItem(projectToTrigger).getLastSuccessfulBuild()
 
 
 
-            steps {
+                    if (lastSuccessfulBuild) {
+                        build(job: projectToTrigger, parameters: [], propagate: false)
+                    } else {
+                        error("No successful builds found for ${projectToTrigger}")
+                    }
+                }
+            }
+        }
+    }
 
-                script {
 
-                    def projectToTrigger = ${jobName}
-                    echo "job name ${SecondstatusCode}"
-                    def lastSuccessfulBuild = jenkins.model.Jenkins.instance.getItem(projectToTrigger).getLastSuccessfulBuild()
-                    echo "Last successful build  ${SecondstatusCode}"
-                    if (lastSuccessfulBuild) {
 
-                        build(job: projectToTrigger, parameters: [], propagate: false)
 
-                    } else {
 
-                        error("No successful builds found for ${projectToTrigger}")
 
-                    }
 
-                }
-
-    }
 
 
         }
-
 }
     
             
