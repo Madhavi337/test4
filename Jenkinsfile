@@ -11,7 +11,7 @@ pipeline {
                     build job: "${jobName}"
 
                     // Optionally, you can pass parameters to the triggered job
-                    build job: '149', parameters: [[$class: 'StringParameterValue', name: 'paramName', value: 'paramValue']]
+                    build(job: '149', propagate: false, wait: true, parameters: [[$class: 'RebuildSettings', rebuild: true]])
                 }
             }
         }
