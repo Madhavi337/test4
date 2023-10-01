@@ -46,7 +46,7 @@ pipeline {
                         // Step 2: Call the Second Endpoint to get no of Carfiles Deployed
                         echo "AccessTokenFirst: ${inputdata}"
                         def res = httpRequest(
-                            url: "https://localhost:9164/management/applications?carbonAppName=${carbonAppName}",
+                            url: "",
                             httpMode: 'GET',
                             customHeaders: [[name: "Authorization", value: "Bearer ${inputdata}"]],
                             acceptType: 'APPLICATION_JSON',
@@ -67,7 +67,7 @@ pipeline {
                             // Step 2: Call the third Endpoint to get the number of Carfiles Deployed
                             echo "AccessTokenFirst: ${inputdata}"
                             def resthree = httpRequest(
-                                url: '',
+                                url: 'https://localhost:9164/management/applications',
                                 httpMode: 'GET',
                                 customHeaders: [[name: "Authorization", value: "Bearer ${inputdata}"]],
                                 acceptType: 'APPLICATION_JSON',
