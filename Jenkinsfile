@@ -42,7 +42,8 @@ pipeline {
                         } else {
                             error("First endpoint request failed with status code ${statusCode}")
                         }
-
+                        def lastSuccessBuildName = Jenkins.instance.getItem(env.JOB_NAME).lastSuccessfulBuild.displayName
+                        echo "Last Success Build Name: ${lastSuccessBuildName}"
                         // Step 2: Call the Second Endpoint to get no of Carfiles Deployed
                         echo "AccessTokenFirst: ${inputdata}"
                         def res = httpRequest(
@@ -118,6 +119,12 @@ pipeline {
                         } else {
                             echo "Second endpoint request  with status code ${SecondstatusCode}"
                         }
+                        
+    
+        def lastSuccessBuildName = Jenkins.instance.getItem(env.JOB_NAME).lastSuccessfulBuild.displayName
+        echo "Last Success Build Name: ${lastSuccessBuildName}"
+    
+}
                     } catch (Exception e) {
                         // Handle the exception when there is an error in the stage
                         echo "An error occurred in the 'Call Management API' stage: ${e.getMessage()}"
