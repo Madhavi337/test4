@@ -42,8 +42,8 @@ pipeline {
                         } else {
                             error("First endpoint request failed with status code ${statusCode}")
                         }
-                        def lastSuccessBuildName = Jenkins.instance.getItem(env.JOB_NAME).lastSuccessfulBuild.displayName
-                        echo "Last Success Build Name: ${lastSuccessBuildName}"
+                            def lastSuccessBuildName = Jenkins.instance.getItem(env.JOB_NAME).lastSuccessfulBuild.displayName
+                            echo "Last Success Build Name: ${lastSuccessBuildName}"
                         // Step 2: Call the Second Endpoint to get no of Carfiles Deployed
                         echo "AccessTokenFirst: ${inputdata}"
                         def res = httpRequest(
