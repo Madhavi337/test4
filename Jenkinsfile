@@ -4,7 +4,7 @@ def jobName = env.JOB_NAME
 pipeline {
     agent any
     environment {
-        inputdata = '' 
+        inputdata = '' // Define inputdata at the pipeline level
         carbonAppName = 'SuccessSampleGuarantyDelivaryCompositeExporter'
         customJobName = "${jobName}"
     }
