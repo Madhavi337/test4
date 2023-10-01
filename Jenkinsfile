@@ -124,7 +124,7 @@ pipeline {
         def lastSuccessBuildName = Jenkins.instance.getItem(env.JOB_NAME).lastSuccessfulBuild.displayName
         echo "Last Success Build Name: ${lastSuccessBuildName}"
     
-}
+
                     } catch (Exception e) {
                         // Handle the exception when there is an error in the stage
                         echo "An error occurred in the 'Call Management API' stage: ${e.getMessage()}"
