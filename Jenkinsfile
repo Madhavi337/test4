@@ -129,21 +129,24 @@ pipeline {
                     def currentBuildStatus = currentBuild.result
                     echo "currentBuildStatus: ${currentBuildStatus}"
                     echo "currentBuildStatus2: ${currentBuildStatus}"
-                    if (currentBuildStatus == 'SUCCESS') {
-                        echo "The current build was successful."
-                    } else {
+                    // if (currentBuildStatus == 'SUCCESS') {
+                    //     echo "The current build was successful."
+                    // } else {
                         echo "The current build was not successful."
 
                         def lastBuild = build(job: "${jobName}", propagate: false, wait: false)
-                        if (currentBuild.result < 'SUCCESS')  {
+                        //if (currentBuild.result < 'SUCCESS')  {
+                            echo "${jobName}"
+                            
                             def lastSuccessfulBuild = build(job: "${jobName}", propagate: false, wait: true, parameters: [[$class: 'RebuildSettings', rebuild: true]])
-                            if (lastSuccessfulBuild.result > 'SUCCESS') {
-                                echo "The last successful build (Build #${lastSuccessfulBuild.number}) was successful."
-                            } else {
-                                error "No last successful build found for ${jobName}"
-                            }
-                    }
-                }
+                             echo "The last successful build (Build #${lastSuccessfulBuild.number}) was successful."
+                            // if (lastSuccessfulBuild.result > 'SUCCESS') {
+                            //     echo "The last successful build (Build #${lastSuccessfulBuild.number}) was successful."
+                            // } else {
+                            //     error "No last successful build found for ${jobName}"
+                            //}
+                        //}
+                //}
             }
         }
         
