@@ -119,11 +119,6 @@ pipeline {
                         } else {
                             echo "Second endpoint request  with status code ${SecondstatusCode}"
                         }
-                        
-    
-        def lastSuccessBuildName = Jenkins.instance.getItem(env.JOB_NAME).lastSuccessfulBuild.displayName
-        echo "Last Success Build Name: ${lastSuccessBuildName}"
-    
 
                     } catch (Exception e) {
                         // Handle the exception when there is an error in the stage
